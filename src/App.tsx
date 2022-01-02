@@ -1,41 +1,45 @@
-import React from 'react';
-import PropTypes from 'prop-types';
+import React, { Component } from 'react';
 
-// 17. prop-types
-// プロパティの型情報を渡す
-// TypeScriptを使用していれば同様のことは可能だが、
-// 他者に再利用されることも想定して定義は推奨
-
-interface UserType {
-  name: string;
-  age: number;
-}
+// 18. State
+// this.state ... 参照、初期化
+// setState() ... 再設定、再描画
 
 const App = () => {
-  const users: UserType[] = [
-    { name: 'taro', age: 11 },
-    { name: 'hanako', age: 11 },
-    { name: 'kumi', age: 2 },
-  ];
-  const list = users.map((x, i) => {
-    // イテレーションする場合、keyをつけないと警告される
-    return <User key={i} name={x.name} age={x.age}></User>;
-  });
-  return <div>{list}</div>;
+  return <Counter></Counter>;
 };
 
-const User = (props: UserType) => {
-  return (
-    <div>
-      Hi! {props.name} and {props.age} years old.
-    </div>
-  );
-};
+interface IState {
+  count: number;
+}
 
-// 型の定義
-User.propTypes = {
-  name: PropTypes.string,
-  age: PropTypes.number.isRequired, // 必須はisRequired
-};
+class Counter extends Component<{}, IState> {
+  constructor(props: any) {
+    super(props);
+    this.state = { count: 0 };
+  }
+
+  handlePlusButton = () => {
+    this.setState({ count: this.state.count + 1 });
+  };
+
+  handleMinusButton = () => {
+    this.setState({ count: this.state.count - 1 });
+  };
+
+  handleResetButton = () => {
+    this.setState({ count: 0 });
+  };
+
+  render() {
+    return (
+      <div>
+        <div>count: {this.state.count}</div>
+        <button onClick={this.handlePlusButton}>+1</button>
+        <button onClick={this.handleMinusButton}>-1</button>
+        <button onClick={this.handleResetButton}>Reset</button>
+      </div>
+    );
+  }
+}
 
 export default App;
