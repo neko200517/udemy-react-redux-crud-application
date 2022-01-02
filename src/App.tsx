@@ -1,20 +1,32 @@
-// これすらいらない
-import React, { Component } from 'react';
+import React from 'react';
 
-// 15. Component
-// クラスコンポーネント、関数コンポーネントの2種類が存在する
-// ※最近では関数コンポーネントが推奨されている
+// 16. props
+// プロパティを渡す
 
-// クラスコンポーネント
-// class App extends Component {
-//   render() {
-//     return <div>Hello!</div>;
-//   }
-// }
+interface UserType {
+  name: string;
+  age?: number;
+}
 
-// 関数コンポーネント
 const App = () => {
-  return <div>Hello!</div>;
+  const users: UserType[] = [{ name: 'taro', age: 11 }, { name: 'hanako' }];
+  const list = users.map((x, i) => {
+    // イテレーションする場合、keyをつけないと警告される
+    return <User key={i} name={x.name} age={x.age}></User>;
+  });
+  return <div>{list}</div>;
+};
+
+const User = (props: UserType) => {
+  return (
+    <div>
+      Hi! {props.name} and {props.age} years old.
+    </div>
+  );
+};
+
+User.defaultProps = {
+  age: 1,
 };
 
 export default App;
