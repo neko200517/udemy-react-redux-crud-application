@@ -12,6 +12,6 @@ export const decrement = () => ({
   type: DECREMENT,
 });
 
-export interface CountActionType {
+export interface ICountActionType {
   type: 'INCREMENT' | 'DECREMENT';
 }

@@ -1,8 +1,12 @@
-import { INCREMENT, DECREMENT, CountActionType } from '../actions';
+import { INCREMENT, DECREMENT, ICountActionType } from '../actions';
 
-const initialState = { value: 0 };
+export interface ICountState {
+  value: number;
+}
 
-const switchEvents = (state = initialState, action: CountActionType) => {
+const initialState: ICountState = { value: 0 };
+
+const switchEvents = (state = initialState, action: ICountActionType) => {
   switch (action.type) {
     case INCREMENT:
       return { value: state.value + 1 };

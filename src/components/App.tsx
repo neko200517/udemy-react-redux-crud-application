@@ -1,45 +1,38 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import { increment, decrement } from '../actions';
 
-// 18. State
-// this.state ... 参照、初期化
-// setState() ... 再設定、再描画
+// 23. connectでstateとactionsとの関連付けを行う
 
-const App = () => {
-  return <Counter></Counter>;
-};
-
-interface IState {
-  count: number;
+interface ICountProps {
+  value: number;
+  increment: React.MouseEventHandler<HTMLButtonElement>;
+  decrement: React.MouseEventHandler<HTMLButtonElement>;
 }
 
-class Counter extends Component<{}, IState> {
-  constructor(props: any) {
-    super(props);
-    this.state = { count: 0 };
-  }
-
-  handlePlusButton = () => {
-    this.setState({ count: this.state.count + 1 });
-  };
-
-  handleMinusButton = () => {
-    this.setState({ count: this.state.count - 1 });
-  };
-
-  handleResetButton = () => {
-    this.setState({ count: 0 });
-  };
-
+class App extends Component<ICountProps> {
   render() {
+    const props = this.props;
     return (
-      <div>
-        <div>count: {this.state.count}</div>
-        <button onClick={this.handlePlusButton}>+1</button>
-        <button onClick={this.handleMinusButton}>-1</button>
-        <button onClick={this.handleResetButton}>Reset</button>
-      </div>
+      <React.Fragment>
+        <div>value: {props.value}</div>
+        <button onClick={props.increment}>+1</button>
+        <button onClick={props.decrement}>-1</button>
+      </React.Fragment>
     );
   }
 }
 
-export default App;
+const mapStateToProps = (state: { count: { value: number } }) => ({
+  value: state.count.value,
+});
+
+// const mapDispatchToProps = (dispatch: any) => ({
+//   increment: () => dispatch(increment()),
+//   decrement: () => dispatch(decrement()),
+// });
+
+// 上記をシンプルに記述可能
+const mapDispatchToProps = { increment, decrement };
+
+export default connect(mapStateToProps, mapDispatchToProps)(App);
