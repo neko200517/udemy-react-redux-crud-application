@@ -1,17 +1,15 @@
 // セクション4: Reduxアプリケーション基礎編
 // 20. Action
 
-export const INCREMENT = 'INCREMENT';
-export const DECREMENT = 'DECREMENT';
+import actionCreatorFactory from 'typescript-fsa';
 
-export const increment = () => ({
-  type: INCREMENT,
-});
+const actionCreator = actionCreatorFactory();
 
-export const decrement = () => ({
-  type: DECREMENT,
-});
-
-export interface ICountActionType {
-  type: 'INCREMENT' | 'DECREMENT';
-}
+export const increment = actionCreator('INCREMENT');
+export const decrement = actionCreator('DECREMENT');
+export const reset = actionCreator<number>('RESET');
+export const ActionCreator = {
+  increment,
+  decrement,
+  reset,
+};
