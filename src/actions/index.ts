@@ -1,17 +1,22 @@
-// セクション4: Reduxアプリケーション基礎編
-// 20. Action
+import axios, { AxiosResponse } from 'axios';
 
-export const INCREMENT = 'INCREMENT';
-export const DECREMENT = 'DECREMENT';
+export const READ_EVENTS = 'READ_EVENTS';
 
-export const increment = () => ({
-  type: INCREMENT,
-});
-
-export const decrement = () => ({
-  type: DECREMENT,
-});
+const ROOT_URL = 'https://udemy-utils.herokuapp.com/api/v1';
+const QUERYSTRING = '?token=token123';
 
 export interface ICountActionType {
-  type: 'INCREMENT' | 'DECREMENT';
+  type: 'READ_EVENTS';
 }
+
+export const readEvents =
+  () =>
+  async (
+    dispatch: (arg0: {
+      type: string;
+      resopnse: AxiosResponse<any, any>;
+    }) => void
+  ) => {
+    const resopnse = await axios.get(`${ROOT_URL}/events${QUERYSTRING}`);
+    dispatch({ type: READ_EVENTS, resopnse });
+  };
