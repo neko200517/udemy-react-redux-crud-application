@@ -5,8 +5,10 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
 import EventsIndex from './components/events_index';
+import EventsNew from './components/events_new';
 import reportWebVitals from './reportWebVitals';
 import thunk from 'redux-thunk';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
 
 import { applyMiddleware, createStore } from 'redux';
 import { Provider } from 'react-redux';
@@ -16,7 +18,12 @@ const store = createStore(reducer, applyMiddleware(thunk));
 
 ReactDOM.render(
   <Provider store={store}>
-    <EventsIndex />
+    <BrowserRouter>
+      <Routes>
+        <Route path='/events/new' element={<EventsNew />} />
+        <Route path='/' element={<EventsIndex />} />
+      </Routes>
+    </BrowserRouter>
   </Provider>,
   document.getElementById('root')
 );
