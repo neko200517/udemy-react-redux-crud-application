@@ -5,7 +5,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
 import EventsIndex from './components/events_index';
-import EventsNew from './components/events_new';
+import EventNew from './components/events_new';
 import reportWebVitals from './reportWebVitals';
 import thunk from 'redux-thunk';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
@@ -20,7 +20,7 @@ ReactDOM.render(
   <Provider store={store}>
     <BrowserRouter>
       <Routes>
-        <Route path='/events/new' element={<EventsNew />} />
+        <Route path='/events/new' element={<EventNew />} />
         <Route path='/' element={<EventsIndex />} />
       </Routes>
     </BrowserRouter>
