@@ -16,10 +16,13 @@ class EventsIndex extends Component<any> {
     const events = this.props.events;
     // lodashのmapメソッドは非同期処理も配慮してくれる
     return _.map(events, (event: any) => {
+      const link = `/events/${event.id}`;
       return (
         <tr key={event.id}>
           <td>{event.id}</td>
-          <td>{event.title}</td>
+          <td>
+            <Link to={link}>{event.title}</Link>
+          </td>
           <td>{event.body}</td>
         </tr>
       );

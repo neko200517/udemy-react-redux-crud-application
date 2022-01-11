@@ -4,7 +4,7 @@ import { Field, reduxForm } from 'redux-form';
 import { Link } from 'react-router-dom';
 import { postEvent } from '../actions';
 
-class EventNew extends Component<any> {
+class EventsNew extends Component<any> {
   constructor(props: any) {
     super(props);
     this.onSubmit = this.onSubmit.bind(this);
@@ -76,4 +76,4 @@ const validate = (values: any) => {
 export default connect(
   null,
   mapDispatchToProps
-)(reduxForm({ validate, form: 'eventNewForm' })(EventNew as any));
+)(reduxForm({ validate, form: 'eventNewForm' })(EventsNew as any));

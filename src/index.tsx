@@ -3,25 +3,33 @@
 
 import React from 'react';
 import ReactDOM from 'react-dom';
-import './index.css';
-import EventsIndex from './components/events_index';
-import EventNew from './components/events_new';
-import reportWebVitals from './reportWebVitals';
-import thunk from 'redux-thunk';
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
-
 import { applyMiddleware, createStore } from 'redux';
 import { Provider } from 'react-redux';
-import reducer from './reducers';
+import thunk from 'redux-thunk';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { composeWithDevTools } from 'redux-devtools-extension';
+import reportWebVitals from './reportWebVitals';
 
-const store = createStore(reducer, applyMiddleware(thunk));
+import './index.css';
+import reducer from './reducers';
+import EventsIndex from './components/events_index';
+import EventsNew from './components/events_new';
+import EventsShow from './components/events_show';
+
+const enhancer =
+  process.env.NODE_ENV === 'development'
+    ? composeWithDevTools(applyMiddleware(thunk))
+    : applyMiddleware(thunk);
+const store = createStore(reducer, enhancer);
 
 ReactDOM.render(
   <Provider store={store}>
     <BrowserRouter>
       <Routes>
-        <Route path='/events/new' element={<EventNew />} />
+        <Route path='/events/new' element={<EventsNew />} />
+        <Route path='/events/:id' element={<EventsShow />} />
         <Route path='/' element={<EventsIndex />} />
+        <Route path='/events' element={<EventsIndex />} />
       </Routes>
     </BrowserRouter>
   </Provider>,
