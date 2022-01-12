@@ -1,75 +1,8 @@
-import React, { Component } from 'react';
+import React, { Component, useEffect } from 'react';
 import { connect } from 'react-redux';
 import { Field, reduxForm } from 'redux-form';
 import { Link, useParams, useNavigate } from 'react-router-dom';
-import { deleteEvent } from '../actions';
-
-// class EventsShow extends Component<any> {
-//   constructor(props: any) {
-//     super(props);
-//     this.onSubmit = this.onSubmit.bind(this);
-//     this.onDeleteClick = this.onDeleteClick.bind(this);
-//   }
-
-//   renderField(field: any) {
-//     const {
-//       input,
-//       label,
-//       type,
-//       meta: { touched, error },
-//     } = field;
-//     return (
-//       <div>
-//         <input {...input} placeholder={label} type={type} />
-//         {touched && error && <span>{error}</span>}
-//       </div>
-//     );
-//   }
-
-//   async onSubmit(values: any) {
-//     await this.props.postEvent(values);
-//     window.location.href = '/';
-//   }
-
-//   async onDeleteClick() {
-//     console.log(useParams);
-//     // await this.props.deleteEvent(id);
-//     // window.location.href = '/';
-//   }
-
-//   render() {
-//     const { handleSubmit, pristine, submitting } = this.props;
-//     return (
-//       <form onSubmit={handleSubmit(this.onSubmit)}>
-//         <div>
-//           <Field
-//             label='Title'
-//             name='title'
-//             type='text'
-//             component={this.renderField}
-//           />
-//           <Field
-//             label='Body'
-//             name='body'
-//             type='text'
-//             component={this.renderField}
-//           />
-//         </div>
-//         <div>
-//           <input
-//             type='submit'
-//             value='Submit'
-//             disabled={pristine || submitting}
-//           />
-//           <Link to='/'>Cancel</Link>
-//           <Link to='/' onClick={this.onDeleteClick}>
-//             Delete
-//           </Link>
-//         </div>
-//       </form>
-//     );
-//   }
-// }
+import { deleteEvent, readEvent } from '../actions';
 
 function EventsShow(props: any) {
   const { id } = useParams();
@@ -90,6 +23,10 @@ function EventsShow(props: any) {
     );
   };
 
+  useEffect(() => {
+    props.readEvent(id);
+  }, []);
+
   const onSubmit = async (values: any) => {
     await props.postEvent(values);
     navigate('/');
@@ -97,32 +34,42 @@ function EventsShow(props: any) {
 
   const onDeleteClick = async () => {
     await props.deleteEvent(id);
-    navigate('/');
   };
 
   return (
-    <form onSubmit={onSubmit}>
-      <div>
-        <Field label='Title' name='title' type='text' component={renderField} />
-        <Field label='Body' name='body' type='text' component={renderField} />
-      </div>
-      <div>
-        <input
-          type='submit'
-          value='Submit'
-          disabled={props.pristine || props.submitting}
-        />
-        <Link to='/'>Cancel</Link>
-        <Link to='/' onClick={onDeleteClick}>
-          Delete
-        </Link>
-      </div>
-    </form>
+    <div>
+      <form onSubmit={onSubmit}>
+        <div>
+          <Field
+            label='Title'
+            name='title'
+            type='text'
+            component={renderField}
+          />
+          <Field label='Body' name='body' type='text' component={renderField} />
+        </div>
+        <div>
+          <input
+            type='submit'
+            value='Submit'
+            disabled={props.pristine || props.submitting}
+          />
+          <Link to='/'>Cancel</Link>
+          <Link to='/' onClick={onDeleteClick}>
+            Delete
+          </Link>
+        </div>
+      </form>
+    </div>
   );
 }
 
-// 上記をシンプルに記述可能
-const mapDispatchToProps = { deleteEvent };
+const mapStateToProps = (state: any, ownProps?: any) => {
+  const data = state.events.data;
+  return { initialValues: data };
+};
+
+const mapDispatchToProps = { deleteEvent, readEvent };
 
 const validate = (values: any) => {
   const errors: { title?: string; body?: string } = {};
@@ -134,6 +81,10 @@ const validate = (values: any) => {
 };
 
 export default connect(
-  null,
+  mapStateToProps,
   mapDispatchToProps
-)(reduxForm({ validate, form: 'eventShowForm' })(EventsShow as any));
+)(
+  reduxForm({ validate, form: 'eventShowForm', enableReinitialize: true })(
+    EventsShow as any
+  )
+);

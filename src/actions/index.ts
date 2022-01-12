@@ -1,5 +1,6 @@
 import axios, { AxiosResponse } from 'axios';
 
+export const READ_EVENT = 'READ_EVENT';
 export const READ_EVENTS = 'READ_EVENTS';
 export const CREATE_EVENTS = 'CREATE_EVENTS';
 export const GET_EVENTS = 'GET_EVENTS';
@@ -40,4 +41,16 @@ export const deleteEvent =
   (id: any) => async (dispatch: (arg0: { type: string; id: any }) => void) => {
     await axios.delete(`${ROOT_URL}/events/${id}${QUERYSTRING}`);
     dispatch({ type: DELETE_EVENTS, id });
+  };
+
+export const readEvent =
+  (id: any) =>
+  async (
+    dispatch: (arg0: {
+      type: string;
+      resopnse: AxiosResponse<any, any>;
+    }) => void
+  ) => {
+    const resopnse = await axios.get(`${ROOT_URL}/events/${id}${QUERYSTRING}`);
+    dispatch({ type: READ_EVENT, resopnse });
   };
