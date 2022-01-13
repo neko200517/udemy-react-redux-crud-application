@@ -1,65 +1,72 @@
-import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Field, reduxForm } from 'redux-form';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { postEvent } from '../actions';
+import { TextField, Button } from '@material-ui/core';
 
-class EventsNew extends Component<any> {
-  constructor(props: any) {
-    super(props);
-    this.onSubmit = this.onSubmit.bind(this);
-  }
+function EventsNew(props: any) {
+  const navigate = useNavigate();
+  const { pristine, submitting, invalid } = props;
 
-  renderField(field: any) {
-    const {
-      input,
-      label,
-      type,
-      meta: { touched, error },
-    } = field;
-    return (
-      <div>
-        <input {...input} placeholder={label} type={type} />
-        {touched && error && <span>{error}</span>}
-      </div>
-    );
-  }
+  const onSubmit = async (values: any) => {
+    values.preventDefault();
+    await props.postEvent(values);
+    navigate('/');
+  };
 
-  async onSubmit(values: any) {
-    await this.props.postEvent(values);
-    window.location.href = '/';
-  }
-
-  render() {
-    const { handleSubmit, pristine, submitting, invalid } = this.props;
-    return (
-      <form onSubmit={handleSubmit(this.onSubmit)}>
+  return (
+    <>
+      <form onSubmit={onSubmit}>
         <div>
           <Field
             label='Title'
             name='title'
             type='text'
-            component={this.renderField}
+            component={renderField}
           />
-          <Field
-            label='Body'
-            name='body'
-            type='text'
-            component={this.renderField}
-          />
+          <Field label='Body' name='body' type='text' component={renderField} />
         </div>
-        <div>
-          <input
-            type='submit'
-            value='Submit'
-            disabled={pristine || submitting || invalid}
-          />
-          <Link to='/'>Cancel</Link>
-        </div>
+
+        <Button
+          variant='contained'
+          style={{ margin: 12 }}
+          type='submit'
+          disabled={pristine || submitting || invalid}
+        >
+          Submit
+        </Button>
+
+        <Button
+          variant='contained'
+          style={{ margin: 12 }}
+          component={Link}
+          to='/'
+        >
+          Cancel
+        </Button>
       </form>
-    );
-  }
+    </>
+  );
 }
+
+const renderField = (field: any) => {
+  const {
+    input,
+    label,
+    type,
+    meta: { touched, error },
+  } = field;
+  return (
+    <TextField
+      type={type}
+      label={label}
+      error={touched && error && error.length > 0}
+      helperText={error ? error : ''}
+      fullWidth={true}
+      {...input}
+    ></TextField>
+  );
+};
 
 // 上記をシンプルに記述可能
 const mapDispatchToProps = { postEvent };

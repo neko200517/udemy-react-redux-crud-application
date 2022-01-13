@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import { Field, reduxForm } from 'redux-form';
 import { Link, useParams, useNavigate } from 'react-router-dom';
 import { deleteEvent, readEvent, putEvent } from '../actions';
+import { TextField, Button } from '@material-ui/core';
 
 // イベントの参照、更新、削除
 function EventsShow(props: any) {
@@ -35,15 +36,33 @@ function EventsShow(props: any) {
         <Field label='Body' name='body' type='text' component={renderField} />
       </div>
       <div>
-        <input
+        <Button
+          variant='contained'
           type='submit'
-          value='Submit'
+          style={{ margin: 12 }}
           disabled={pristine || submitting || invalid}
-        />
-        <Link to='/'>Cancel</Link>
-        <Link to='/' onClick={onDeleteClick}>
+        >
+          Submit
+        </Button>
+
+        <Button
+          variant='contained'
+          style={{ margin: 12 }}
+          onClick={onDeleteClick}
+          component={Link}
+          to='/'
+        >
           Delete
-        </Link>
+        </Button>
+
+        <Button
+          variant='contained'
+          style={{ margin: 12 }}
+          component={Link}
+          to='/'
+        >
+          Cancel
+        </Button>
       </div>
     </form>
   );
@@ -57,11 +76,16 @@ const renderField = (field: any) => {
     type,
     meta: { touched, error },
   } = field;
+
   return (
-    <div>
-      <input {...input} placeholder={label} type={type} />
-      {touched && error && <span>{error}</span>}
-    </div>
+    <TextField
+      type={type}
+      label={label}
+      error={touched && error && error.length > 0}
+      helperText={error ? error : ''}
+      fullWidth={true}
+      {...input}
+    ></TextField>
   );
 };
 

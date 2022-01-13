@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import { useEffect } from 'react';
 import { connect } from 'react-redux';
 import { readEvents } from '../actions';
 import _ from 'lodash';
@@ -15,16 +15,14 @@ import {
 
 import AddIcon from '@material-ui/icons/Add';
 
-// 23. connectでstateとactionsとの関連付けを行う
+function EventsIndex(props: any) {
+  // 初回のみ起動
+  useEffect(() => {
+    props.readEvents();
+  }, [props]);
 
-class EventsIndex extends Component<any> {
-  // ロード時に呼ばれる
-  componentDidMount() {
-    this.props.readEvents();
-  }
-
-  renderEvents() {
-    const events = this.props.events;
+  const renderEvents = () => {
+    const events = props.events;
     // lodashのmapメソッドは非同期処理も配慮してくれる
     return _.map(events, (event: any) => {
       const link = `/events/${event.id}`;
@@ -38,39 +36,37 @@ class EventsIndex extends Component<any> {
         </TableRow>
       );
     });
-  }
+  };
 
-  render() {
-    return (
-      <React.Fragment>
-        <Fab
-          color='primary'
-          aria-label='Add'
-          component={Link}
-          to='events/new'
-          style={{
-            position: 'fixed',
-            bottom: 12,
-            right: 12,
-          }}
-        >
-          <AddIcon />
-        </Fab>
-        <TableContainer>
-          <Table>
-            <TableHead>
-              <TableRow>
-                <TableCell>ID</TableCell>
-                <TableCell>Title</TableCell>
-                <TableCell>Body</TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>{this.renderEvents()}</TableBody>
-          </Table>
-        </TableContainer>
-      </React.Fragment>
-    );
-  }
+  return (
+    <>
+      <Fab
+        color='primary'
+        aria-label='Add'
+        component={Link}
+        to='events/new'
+        style={{
+          position: 'fixed',
+          bottom: 12,
+          right: 12,
+        }}
+      >
+        <AddIcon />
+      </Fab>
+      <TableContainer>
+        <Table>
+          <TableHead>
+            <TableRow>
+              <TableCell>ID</TableCell>
+              <TableCell>Title</TableCell>
+              <TableCell>Body</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>{renderEvents()}</TableBody>
+        </Table>
+      </TableContainer>
+    </>
+  );
 }
 
 const mapStateToProps = (state: any) => ({ events: state.events });

@@ -29,10 +29,14 @@ export const postEvent =
       resopnse: AxiosResponse<any, any>;
     }) => void
   ) => {
-    const resopnse = await axios.post(
-      `${ROOT_URL}/events${QUERYSTRING}`,
-      values
-    );
+    const data: {
+      title: string;
+      body: string;
+    } = {
+      title: values.target[0].value,
+      body: values.target[1].value,
+    };
+    const resopnse = await axios.post(`${ROOT_URL}/events${QUERYSTRING}`, data);
     dispatch({ type: CREATE_EVENTS, resopnse });
   };
 
