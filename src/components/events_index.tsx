@@ -3,6 +3,17 @@ import { connect } from 'react-redux';
 import { readEvents } from '../actions';
 import _ from 'lodash';
 import { Link } from 'react-router-dom';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Fab,
+} from '@material-ui/core';
+
+import AddIcon from '@material-ui/icons/Add';
 
 // 23. connectでstateとactionsとの関連付けを行う
 
@@ -18,13 +29,13 @@ class EventsIndex extends Component<any> {
     return _.map(events, (event: any) => {
       const link = `/events/${event.id}`;
       return (
-        <tr key={event.id}>
-          <td>{event.id}</td>
-          <td>
+        <TableRow key={event.id}>
+          <TableCell>{event.id}</TableCell>
+          <TableCell>
             <Link to={link}>{event.title}</Link>
-          </td>
-          <td>{event.body}</td>
-        </tr>
+          </TableCell>
+          <TableCell>{event.body}</TableCell>
+        </TableRow>
       );
     });
   }
@@ -32,17 +43,31 @@ class EventsIndex extends Component<any> {
   render() {
     return (
       <React.Fragment>
-        <table>
-          <thead>
-            <tr>
-              <th>ID</th>
-              <th>Title</th>
-              <th>Body</th>
-            </tr>
-          </thead>
-          <tbody>{this.renderEvents()}</tbody>
-        </table>
-        <Link to='/events/new'>New Event</Link>
+        <Fab
+          color='primary'
+          aria-label='Add'
+          component={Link}
+          to='events/new'
+          style={{
+            position: 'fixed',
+            bottom: 12,
+            right: 12,
+          }}
+        >
+          <AddIcon />
+        </Fab>
+        <TableContainer>
+          <Table>
+            <TableHead>
+              <TableRow>
+                <TableCell>ID</TableCell>
+                <TableCell>Title</TableCell>
+                <TableCell>Body</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>{this.renderEvents()}</TableBody>
+          </Table>
+        </TableContainer>
       </React.Fragment>
     );
   }
