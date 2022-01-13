@@ -1,12 +1,13 @@
-import React, { Component, useEffect } from 'react';
+import { useEffect } from 'react';
 import { connect } from 'react-redux';
 import { Field, reduxForm } from 'redux-form';
 import { Link, useParams, useNavigate } from 'react-router-dom';
-import { deleteEvent, readEvent } from '../actions';
+import { deleteEvent, readEvent, putEvent } from '../actions';
 
 function EventsShow(props: any) {
   const { id } = useParams();
   const navigate = useNavigate();
+  const { invalid } = props;
 
   const renderField = (field: any) => {
     const {
@@ -28,7 +29,8 @@ function EventsShow(props: any) {
   }, []);
 
   const onSubmit = async (values: any) => {
-    await props.postEvent(values);
+    values.preventDefault();
+    await props.putEvent(id, values);
     navigate('/');
   };
 
@@ -37,39 +39,28 @@ function EventsShow(props: any) {
   };
 
   return (
-    <div>
-      <form onSubmit={onSubmit}>
-        <div>
-          <Field
-            label='Title'
-            name='title'
-            type='text'
-            component={renderField}
-          />
-          <Field label='Body' name='body' type='text' component={renderField} />
-        </div>
-        <div>
-          <input
-            type='submit'
-            value='Submit'
-            disabled={props.pristine || props.submitting}
-          />
-          <Link to='/'>Cancel</Link>
-          <Link to='/' onClick={onDeleteClick}>
-            Delete
-          </Link>
-        </div>
-      </form>
-    </div>
+    <form onSubmit={onSubmit}>
+      <div>
+        <Field label='Title' name='title' type='text' component={renderField} />
+        <Field label='Body' name='body' type='text' component={renderField} />
+      </div>
+      <div>
+        <input type='submit' value='Submit' disabled={invalid} />
+        <Link to='/'>Cancel</Link>
+        <Link to='/' onClick={onDeleteClick}>
+          Delete
+        </Link>
+      </div>
+    </form>
   );
 }
 
-const mapStateToProps = (state: any, ownProps?: any) => {
+const mapStateToProps = (state: any) => {
   const data = state.events.data;
   return { initialValues: data };
 };
 
-const mapDispatchToProps = { deleteEvent, readEvent };
+const mapDispatchToProps = { deleteEvent, readEvent, putEvent };
 
 const validate = (values: any) => {
   const errors: { title?: string; body?: string } = {};
