@@ -4,40 +4,30 @@ import { Field, reduxForm } from 'redux-form';
 import { Link, useParams, useNavigate } from 'react-router-dom';
 import { deleteEvent, readEvent, putEvent } from '../actions';
 
+// イベントの参照、更新、削除
 function EventsShow(props: any) {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { invalid } = props;
+  const { pristine, submitting, invalid } = props;
 
-  const renderField = (field: any) => {
-    const {
-      input,
-      label,
-      type,
-      meta: { touched, error },
-    } = field;
-    return (
-      <div>
-        <input {...input} placeholder={label} type={type} />
-        {touched && error && <span>{error}</span>}
-      </div>
-    );
-  };
-
+  // 初回のみ起動
   useEffect(() => {
     props.readEvent(id);
-  }, []);
+  }, [id, props]);
 
+  // Submit_Submit
   const onSubmit = async (values: any) => {
     values.preventDefault();
     await props.putEvent(id, values);
     navigate('/');
   };
 
+  // Delete_Click
   const onDeleteClick = async () => {
     await props.deleteEvent(id);
   };
 
+  // draw
   return (
     <form onSubmit={onSubmit}>
       <div>
@@ -45,7 +35,11 @@ function EventsShow(props: any) {
         <Field label='Body' name='body' type='text' component={renderField} />
       </div>
       <div>
-        <input type='submit' value='Submit' disabled={invalid} />
+        <input
+          type='submit'
+          value='Submit'
+          disabled={pristine || submitting || invalid}
+        />
         <Link to='/'>Cancel</Link>
         <Link to='/' onClick={onDeleteClick}>
           Delete
@@ -55,13 +49,32 @@ function EventsShow(props: any) {
   );
 }
 
+// Fieldの定義
+const renderField = (field: any) => {
+  const {
+    input,
+    label,
+    type,
+    meta: { touched, error },
+  } = field;
+  return (
+    <div>
+      <input {...input} placeholder={label} type={type} />
+      {touched && error && <span>{error}</span>}
+    </div>
+  );
+};
+
+// propsにデータを渡す
 const mapStateToProps = (state: any) => {
   const data = state.events.data;
   return { initialValues: data };
 };
 
+// ディスパッチする関数
 const mapDispatchToProps = { deleteEvent, readEvent, putEvent };
 
+// バリデーション
 const validate = (values: any) => {
   const errors: { title?: string; body?: string } = {};
 
@@ -71,6 +84,7 @@ const validate = (values: any) => {
   return errors;
 };
 
+// reduxにconnect
 export default connect(
   mapStateToProps,
   mapDispatchToProps
