@@ -1,53 +1,80 @@
-import { useEffect } from 'react';
+import { FormEvent, useEffect } from 'react';
 import { connect } from 'react-redux';
 import { Field, reduxForm } from 'redux-form';
 import { Link, useParams, useNavigate } from 'react-router-dom';
-import { deleteEvent, readEvent, putEvent } from '../actions';
+import { deleteEvent, readEvent, putEvent, DispatchType } from '../actions';
 import { TextField, Button } from '@material-ui/core';
 
 // イベントの参照、更新、削除
-function EventsShow(props: any) {
-  const { id } = useParams();
+type PropsType = {
+  readEvent: (id: number) => (dispatch: DispatchType) => Promise<void>;
+  putEvent: (
+    id: number,
+    values: any
+  ) => (dispatch: DispatchType) => Promise<void>;
+  deleteEvent: (id: number) => (dispatch: DispatchType) => Promise<void>;
+  pristine: boolean;
+  submitting: boolean;
+  invalid: boolean;
+};
+function EventsShow(props: PropsType) {
+  const { id } = useParams<string>();
   const navigate = useNavigate();
   const { pristine, submitting, invalid } = props;
 
+  // コンポーネントのプロパティ
+  const attributes: any = {
+    fieldTitle: {
+      label: 'Title',
+      name: 'title',
+      type: 'text',
+    },
+    fieldBody: {
+      label: 'Body',
+      name: 'body',
+      type: 'text',
+    },
+    button: {
+      variant: 'contained',
+      style: { margin: 12 },
+    },
+  };
+
   // 初回のみ起動
   useEffect(() => {
-    props.readEvent(id);
+    props.readEvent(Number(id));
   }, [id, props]);
 
   // Submit_Submit
-  const onSubmit = async (values: any) => {
+  const onSubmit = async (values: FormEvent<HTMLFormElement>) => {
     values.preventDefault();
-    await props.putEvent(id, values);
+    await props.putEvent(Number(id), values);
     navigate('/');
   };
 
   // Delete_Click
   const onDeleteClick = async () => {
-    await props.deleteEvent(id);
+    await props.deleteEvent(Number(id));
   };
 
   // draw
   return (
     <form onSubmit={onSubmit}>
       <div>
-        <Field label='Title' name='title' type='text' component={renderField} />
-        <Field label='Body' name='body' type='text' component={renderField} />
+        <Field {...attributes.fieldTitle} component={renderField} />
+        <Field {...attributes.fieldBody} component={renderField} />
       </div>
       <div>
         <Button
-          variant='contained'
+          {...attributes.button}
           type='submit'
-          style={{ margin: 12 }}
           disabled={pristine || submitting || invalid}
         >
           Submit
         </Button>
 
         <Button
-          variant='contained'
-          style={{ margin: 12 }}
+          {...attributes.button}
           onClick={onDeleteClick}
           component={Link}
           to='/'
@@ -55,12 +82,7 @@ function EventsShow(props: any) {
           Delete
         </Button>
 
-        <Button
-          variant='contained'
-          style={{ margin: 12 }}
-          component={Link}
-          to='/'
-        >
+        <Button {...attributes.button} component={Link} to='/'>
           Cancel
         </Button>
       </div>
@@ -69,7 +91,12 @@ function EventsShow(props: any) {
 }
 
 // Fieldの定義
-const renderField = (field: any) => {
+const renderField = (field: {
+  input: any;
+  label: string;
+  type: string;
+  meta: { touched: boolean; error: string | undefined };
+}) => {
   const {
     input,
     label,
@@ -90,7 +117,9 @@ const renderField = (field: any) => {
 };
 
 // propsにデータを渡す
-const mapStateToProps = (state: any) => {
+const mapStateToProps = (state: {
+  events: { data: { title: string; body: string } };
+}) => {
   const data = state.events.data;
   return { initialValues: data };
 };
@@ -99,8 +128,8 @@ const mapStateToProps = (state: any) => {
 const mapDispatchToProps = { deleteEvent, readEvent, putEvent };
 
 // バリデーション
-const validate = (values: any) => {
-  const errors: { title?: string; body?: string } = {};
+const validate = (values: { title: string; body: string }) => {
+  const errors: { title: string; body: string } = { title: '', body: '' };
 
   if (!values.title) errors.title = 'Enter a title, please.';
   if (!values.body) errors.body = 'Enter a body, please.';

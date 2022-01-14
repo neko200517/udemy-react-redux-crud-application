@@ -8,6 +8,24 @@ function EventsNew(props: any) {
   const navigate = useNavigate();
   const { pristine, submitting, invalid } = props;
 
+  // コンポーネントのプロパティ
+  const attributes: any = {
+    fieldTitle: {
+      label: 'Title',
+      name: 'title',
+      type: 'text',
+    },
+    fieldBody: {
+      label: 'Body',
+      name: 'body',
+      type: 'text',
+    },
+    button: {
+      variant: 'contained',
+      style: { margin: 12 },
+    },
+  };
+
   const onSubmit = async (values: any) => {
     values.preventDefault();
     await props.postEvent(values);
@@ -18,30 +36,19 @@ function EventsNew(props: any) {
     <>
       <form onSubmit={onSubmit}>
         <div>
-          <Field
-            label='Title'
-            name='title'
-            type='text'
-            component={renderField}
-          />
-          <Field label='Body' name='body' type='text' component={renderField} />
+          <Field {...attributes.fieldTitle} component={renderField} />
+          <Field {...attributes.fieldBody} component={renderField} />
         </div>
 
         <Button
-          variant='contained'
-          style={{ margin: 12 }}
+          {...attributes.button}
           type='submit'
           disabled={pristine || submitting || invalid}
         >
           Submit
         </Button>
 
-        <Button
-          variant='contained'
-          style={{ margin: 12 }}
-          component={Link}
-          to='/'
-        >
+        <Button {...attributes.button} component={Link} to='/'>
           Cancel
         </Button>
       </form>

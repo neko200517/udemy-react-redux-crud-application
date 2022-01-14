@@ -16,6 +16,20 @@ import {
 import AddIcon from '@material-ui/icons/Add';
 
 function EventsIndex(props: any) {
+  // コンポーネントのプロパティ
+  const attributes: any = {
+    fab: {
+      color: 'primary',
+      aria_label: 'Add',
+      to: 'events/new',
+      style: {
+        position: 'fixed',
+        bottom: 12,
+        right: 12,
+      },
+    },
+  };
+
   // 初回のみ起動
   useEffect(() => {
     props.readEvents();
@@ -40,17 +54,7 @@ function EventsIndex(props: any) {
 
   return (
     <>
-      <Fab
-        color='primary'
-        aria-label='Add'
-        component={Link}
-        to='events/new'
-        style={{
-          position: 'fixed',
-          bottom: 12,
-          right: 12,
-        }}
-      >
+      <Fab {...attributes.fab} component={Link}>
         <AddIcon />
       </Fab>
       <TableContainer>
